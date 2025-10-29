@@ -11,6 +11,12 @@ spring:
     job:
       enabled: false
 
+  datasource:
+    hikari:
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
 server:
   port: 8080
 
@@ -25,13 +31,6 @@ jasypt:
     provider-name: SunJCE
     salt-generator-classname: org.jasypt.salt.RandomSaltGenerator
     string-output-type: base64
-
-spring:
-  datasource:
-    hikari:
-      connection-timeout: 30000
-      idle-timeout: 600000
-      max-lifetime: 1800000
 
 mybatis:
   mapper-locations: classpath:mybatis/mapper/**/*.xml
