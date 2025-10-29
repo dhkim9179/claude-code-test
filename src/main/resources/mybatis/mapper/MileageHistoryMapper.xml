@@ -68,19 +68,14 @@
     </select>
 
     <!-- 마일리지 이력 등록 -->
-    <insert id="insert" parameterType="com.example.demo.domain.MileageHistory">
-        <selectKey keyProperty="id" resultType="long" order="BEFORE">
-            SELECT MILEAGE_HISTORY_SEQ.NEXTVAL FROM DUAL
-        </selectKey>
+    <insert id="insert" parameterType="com.example.demo.domain.MileageHistory" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO MILEAGE_HISTORY (
-            id,
             MILEAGE_member_id,
             type,
             amount,
             description,
             create_date
         ) VALUES (
-            #{id},
             #{mileageMemberId},
             #{type},
             #{amount},
@@ -101,5 +96,14 @@
         FROM MILEAGE_HISTORY
         WHERE MILEAGE_member_id = #{memberId}
     </select>
+
+    <!-- 마일리지 이력 배치 등록 -->
+    <insert id="batchInsert">
+        INSERT INTO MILEAGE_HISTORY (MILEAGE_member_id, type, amount, description, create_date)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.mileageMemberId}, #{item.type}, #{item.amount}, #{item.description}, #{item.createDate})
+        </foreach>
+    </insert>
 
 </mapper>

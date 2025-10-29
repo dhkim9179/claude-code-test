@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper.MileageDailySummaryMapper">
+
+    <!-- Result Map 정의 -->
+    <resultMap id="MileageDailySummaryResultMap" type="com.example.demo.domain.MileageDailySummary">
+        <id property="summaryDate" column="summary_date"/>
+        <result property="totalEarnAmount" column="total_earn_amount"/>
+        <result property="totalEarnCount" column="total_earn_count"/>
+        <result property="totalUseAmount" column="total_use_amount"/>
+        <result property="totalUseCount" column="total_use_count"/>
+        <result property="netAmount" column="net_amount"/>
+        <result property="createDate" column="create_date"/>
+        <result property="updateDate" column="update_date"/>
+    </resultMap>
+
+    <!-- 특정 일자의 집계 정보 조회 -->
+    <select id="findBySummaryDate" resultMap="MileageDailySummaryResultMap">
+        SELECT summary_date,
+               total_earn_amount,
+               total_earn_count,
+               total_use_amount,
+               total_use_count,
+               net_amount,
+               create_date,
+               update_date
+        FROM MILEAGE_DAILY_SUMMARY
+        WHERE summary_date = #{summaryDate}
+    </select>
+
+    <!-- 기간별 집계 정보 목록 조회 -->
+    <select id="findByDateRange" resultMap="MileageDailySummaryResultMap">
+        SELECT summary_date,
+               total_earn_amount,
+               total_earn_count,
+               total_use_amount,
+               total_use_count,
+               net_amount,
+               create_date,
+               update_date
+        FROM MILEAGE_DAILY_SUMMARY
+        WHERE summary_date BETWEEN #{startDate} AND #{endDate}
+        ORDER BY summary_date
+    </select>
+
+    <!-- 일별 집계 정보 등록 -->
+    <insert id="insert">
+        INSERT INTO MILEAGE_DAILY_SUMMARY (
+            summary_date,
+            total_earn_amount,
+            total_earn_count,
+            total_use_amount,
+            total_use_count,
+            net_amount,
+            create_date,
+            update_date
+        ) VALUES (
+            #{summaryDate},
+            #{totalEarnAmount},
+            #{totalEarnCount},
+            #{totalUseAmount},
+            #{totalUseCount},
+            #{netAmount},
+            #{createDate},
+            #{updateDate}
+        )
+    </insert>
+
+    <!-- 일별 집계 정보 업데이트 -->
+    <update id="update">
+        UPDATE MILEAGE_DAILY_SUMMARY
+        SET total_earn_amount = #{totalEarnAmount},
+            total_earn_count = #{totalEarnCount},
+            total_use_amount = #{totalUseAmount},
+            total_use_count = #{totalUseCount},
+            net_amount = #{netAmount},
+            update_date = CURRENT_TIMESTAMP
+        WHERE summary_date = #{summaryDate}
+    </update>
+
+    <!-- 일별 집계 정보 삭제 -->
+    <delete id="deleteBySummaryDate">
+        DELETE FROM MILEAGE_DAILY_SUMMARY
+        WHERE summary_date = #{summaryDate}
+    </delete>
+
+    <!-- 마일리지 히스토리로부터 특정 일자의 집계 데이터 생성 -->
+    <select id="aggregateByDate" resultMap="MileageDailySummaryResultMap">
+        SELECT
+            CAST(create_date AS DATE) AS summary_date,
+            COALESCE(SUM(CASE WHEN type = 'EARN' THEN amount ELSE 0 END), 0) AS total_earn_amount,
+            COALESCE(COUNT(CASE WHEN type = 'EARN' THEN 1 END), 0) AS total_earn_count,
+            COALESCE(SUM(CASE WHEN type = 'USE' THEN ABS(amount) ELSE 0 END), 0) AS total_use_amount,
+            COALESCE(COUNT(CASE WHEN type = 'USE' THEN 1 END), 0) AS total_use_count,
+            COALESCE(SUM(CASE WHEN type = 'EARN' THEN amount ELSE -ABS(amount) END), 0) AS net_amount,
+            CURRENT_TIMESTAMP AS create_date,
+            CURRENT_TIMESTAMP AS update_date
+        FROM MILEAGE_HISTORY
+        WHERE CAST(create_date AS DATE) = #{summaryDate}
+        GROUP BY CAST(create_date AS DATE)
+    </select>
+
+    <!-- UPSERT (H2 MERGE 구문 사용) -->
+    <insert id="upsert">
+        MERGE INTO MILEAGE_DAILY_SUMMARY
+        USING (VALUES(
+            #{summaryDate},
+            #{totalEarnAmount},
+            #{totalEarnCount},
+            #{totalUseAmount},
+            #{totalUseCount},
+            #{netAmount}
+        )) AS vals(summary_date, total_earn_amount, total_earn_count, total_use_amount, total_use_count, net_amount)
+        ON MILEAGE_DAILY_SUMMARY.summary_date = vals.summary_date
+        WHEN MATCHED THEN
+            UPDATE SET
+                total_earn_amount = vals.total_earn_amount,
+                total_earn_count = vals.total_earn_count,
+                total_use_amount = vals.total_use_amount,
+                total_use_count = vals.total_use_count,
+                net_amount = vals.net_amount,
+                update_date = CURRENT_TIMESTAMP
+        WHEN NOT MATCHED THEN
+            INSERT (summary_date, total_earn_amount, total_earn_count, total_use_amount, total_use_count, net_amount, create_date, update_date)
+            VALUES (vals.summary_date, vals.total_earn_amount, vals.total_earn_count, vals.total_use_amount, vals.total_use_count, vals.net_amount, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    </insert>
+
+</mapper>

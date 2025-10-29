@@ -70,4 +70,12 @@ public interface MileageHistoryMapper {
      * @return 이력 개수
      */
     int countByMemberId(@Param("memberId") Long memberId);
+
+    /**
+     * 마일리지 이력 배치 등록
+     *
+     * @param historyList 마일리지 이력 목록
+     * @return 등록된 행 수
+     */
+    int batchInsert(@Param("list") List<MileageHistory> historyList);
 }
