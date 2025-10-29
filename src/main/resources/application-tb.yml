@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@tb-db-server:1521:TBDB
+    username: tb_user
+    password: tb_password
+    hikari:
+      maximum-pool-size: 30
+      minimum-idle: 15
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  batch:
+    jdbc:
+      initialize-schema: never
+
+logging:
+  level:
+    com.example.demo: INFO
+    org.springframework.batch: INFO
+    org.mybatis: INFO
+  file:
+    name: logs/batch-tb.log
+    max-size: 100MB
+    max-history: 60
