@@ -13,9 +13,10 @@ spring:
 
 mybatis:
   mapper-locations: classpath:mybatis/mapper/**/*.xml
-  type-aliases-package: com.example.demo
+  type-aliases-package: com.example.demo.domain
   configuration:
     map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
     default-fetch-size: 100
     default-statement-timeout: 30
 
