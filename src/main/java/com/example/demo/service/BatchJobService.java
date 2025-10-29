@@ -117,7 +117,7 @@ public class BatchJobService {
 
     /**
      * JobParameters를 생성합니다.
-     * 각 Job 실행을 고유하게 만들기 위해 timestamp를 추가합니다.
+     * 각 Job 실행을 고유하게 만들기 위해 timestamp와 random 값을 추가합니다.
      *
      * @param params 사용자가 전달한 파라미터 맵
      * @return JobParameters 객체
@@ -130,8 +130,16 @@ public class BatchJobService {
             params.forEach(builder::addString);
         }
 
+        // executionType이 없으면 'manual'로 설정 (API 수동 실행)
+        if (params == null || !params.containsKey("executionType")) {
+            builder.addString("executionType", "manual");
+        }
+
         // 각 실행을 고유하게 만들기 위한 timestamp 추가
         builder.addLong("timestamp", System.currentTimeMillis());
+
+        // API 수동 실행을 위한 random 값 추가
+        builder.addLong("random", (long) (Math.random() * Long.MAX_VALUE));
 
         return builder.toJobParameters();
     }
