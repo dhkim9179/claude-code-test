@@ -8,10 +8,6 @@ spring:
       maximum-pool-size: 30
       minimum-idle: 15
 
-  batch:
-    jdbc:
-      initialize-schema: never
-
 logging:
   level:
     com.example.demo: INFO
