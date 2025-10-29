@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@prd1-db-server:1521:PRD1DB
+    username: prd1_user
+    password: prd1_password
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 20
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  batch:
+    jdbc:
+      initialize-schema: never
+
+logging:
+  level:
+    com.example.demo: INFO
+    org.springframework.batch: WARN
+    org.mybatis: WARN
+  file:
+    name: logs/batch-prd1.log
+    max-size: 200MB
+    max-history: 90

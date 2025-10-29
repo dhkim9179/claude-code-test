@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: demo
+
+  profiles:
+    active: local
+
+  batch:
+    jdbc:
+      initialize-schema: always
+    job:
+      enabled: false
+
+mybatis:
+  mapper-locations: classpath:mybatis/mapper/**/*.xml
+  type-aliases-package: com.example.demo
+  configuration:
+    map-underscore-to-camel-case: true
+    default-fetch-size: 100
+    default-statement-timeout: 30
+
+logging:
+  level:
+    com.example.demo: INFO
+    org.springframework.batch: INFO
+    org.mybatis: DEBUG
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss} - %msg%n'
+    file: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
