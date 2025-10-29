@@ -14,6 +14,18 @@ spring:
 server:
   port: 8080
 
+# Jasypt 암호화 설정
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+    password: ${JASYPT_ENCRYPTOR_PASSWORD:defaultPassword}  # 환경변수 또는 실행 인자로 전달
+    algorithm: PBEWithMD5AndDES
+    key-obtention-iterations: 1000
+    pool-size: 1
+    provider-name: SunJCE
+    salt-generator-classname: org.jasypt.salt.RandomSaltGenerator
+    string-output-type: base64
+
 mybatis:
   mapper-locations: classpath:mybatis/mapper/**/*.xml
   type-aliases-package: com.example.demo.domain
