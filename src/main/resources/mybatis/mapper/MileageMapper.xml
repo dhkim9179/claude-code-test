@@ -68,4 +68,13 @@
           AND balance >= #{amount}
     </update>
 
+    <!-- 마일리지 배치 등록 -->
+    <insert id="batchInsert">
+        INSERT INTO MILEAGE (member_id, balance, create_date, update_date)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.memberId}, #{item.balance}, #{item.createDate}, #{item.updateDate})
+        </foreach>
+    </insert>
+
 </mapper>

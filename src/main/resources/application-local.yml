@@ -11,10 +11,26 @@ spring:
   h2:
     console:
       enabled: true
+      path: /h2-console
 
   batch:
     jdbc:
       initialize-schema: always
+
+  # 애플리케이션 스키마 초기화 설정
+  # schema.sql 파일을 자동으로 실행하여 테이블 생성
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+      encoding: UTF-8
+
+  # 스케줄러 설정
+  task:
+    scheduling:
+      enabled: true
+      pool:
+        size: 5
 
 logging:
   level:

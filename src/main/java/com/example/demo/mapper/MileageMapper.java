@@ -61,4 +61,12 @@ public interface MileageMapper {
      * @return 업데이트된 행 수
      */
     int decreaseBalance(@Param("memberId") Long memberId, @Param("amount") Long amount);
+
+    /**
+     * 마일리지 배치 등록
+     *
+     * @param mileageList 마일리지 정보 목록
+     * @return 등록된 행 수
+     */
+    int batchInsert(@Param("list") java.util.List<Mileage> mileageList);
 }
