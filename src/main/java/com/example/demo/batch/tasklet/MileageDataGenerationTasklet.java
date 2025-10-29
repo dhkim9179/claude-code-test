@@ -20,7 +20,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 마일리지 테스트 데이터 생성 Tasklet
- * 100,000명의 회원과 한 달간의 마일리지 히스토리 데이터를 생성
+ * 1,000명의 회원과 한 달간의 마일리지 히스토리 데이터를 생성
  */
 @Slf4j
 @Component
@@ -31,15 +31,13 @@ public class MileageDataGenerationTasklet implements Tasklet {
     private final MileageHistoryMapper mileageHistoryMapper;
 
     // 생성할 회원 수
-    private static final int TOTAL_MEMBERS = 100_000;
+    private static final int TOTAL_MEMBERS = 1_000;
     // 최대 마일리지 잔액
     private static final int MAX_BALANCE = 100_000;
     // 한 달 기간 (일)
     private static final int DAYS_IN_MONTH = 30;
-    // 일 최소 거래 건수
-    private static final int MIN_DAILY_TRANSACTIONS = 400_000;
-    // 일 최대 거래 건수
-    private static final int MAX_DAILY_TRANSACTIONS = 1_000_000;
+    // 일별 거래 건수 (고정)
+    private static final int DAILY_TRANSACTIONS = 10_000;
     // 배치 크기 (한번에 insert할 데이터 수)
     private static final int BATCH_SIZE = 1000;
 
@@ -86,7 +84,7 @@ public class MileageDataGenerationTasklet implements Tasklet {
                 mileageMapper.batchInsert(mileageBatch);
                 mileageBatch.clear();
 
-                if (memberId % 10_000 == 0) {
+                if (memberId % 100 == 0) {
                     log.info("회원 생성 진행 중: {}/{}", memberId, TOTAL_MEMBERS);
                 }
             }
@@ -113,10 +111,8 @@ public class MileageDataGenerationTasklet implements Tasklet {
             LocalDate currentDate = startDate.plusDays(day);
             log.info("마일리지 히스토리 생성 중: {} ({}/{}일)", currentDate, day + 1, DAYS_IN_MONTH);
 
-            // 해당 일자의 거래 건수 결정 (랜덤)
-            int dailyTransactions = ThreadLocalRandom.current().nextInt(MIN_DAILY_TRANSACTIONS, MAX_DAILY_TRANSACTIONS + 1);
-
-            generateDailyHistories(currentDate, dailyTransactions, memberBalances, day == DAYS_IN_MONTH - 1);
+            // 해당 일자의 거래 건수 (고정)
+            generateDailyHistories(currentDate, DAILY_TRANSACTIONS, memberBalances, day == DAYS_IN_MONTH - 1);
         }
     }
 
