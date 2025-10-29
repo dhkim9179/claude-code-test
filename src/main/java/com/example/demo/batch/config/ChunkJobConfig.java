@@ -3,6 +3,8 @@ package com.example.demo.batch.config;
 import com.example.demo.batch.chunk.UserItemProcessor;
 import com.example.demo.batch.chunk.UserItemReader;
 import com.example.demo.batch.chunk.UserItemWriter;
+import com.example.demo.batch.listener.BatchJobExecutionListener;
+import com.example.demo.batch.listener.BatchStepExecutionListener;
 import com.example.demo.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +41,8 @@ public class ChunkJobConfig {
     private final UserItemReader userItemReader;
     private final UserItemProcessor userItemProcessor;
     private final UserItemWriter userItemWriter;
+    private final BatchJobExecutionListener batchJobExecutionListener;
+    private final BatchStepExecutionListener batchStepExecutionListener;
 
     /**
      * Chunk 기반 Job 정의
@@ -49,6 +53,7 @@ public class ChunkJobConfig {
     public Job chunkJob() {
         log.info("chunkJob 빈 생성");
         return new JobBuilder("chunkJob", jobRepository)
+                .listener(batchJobExecutionListener)  // Job 리스너 등록
                 .start(chunkStep())  // Step 시작
                 .build();
     }
@@ -72,6 +77,7 @@ public class ChunkJobConfig {
                 .reader(userItemReader)         // 데이터 읽기
                 .processor(userItemProcessor)   // 데이터 처리
                 .writer(userItemWriter)         // 데이터 쓰기
+                .listener(batchStepExecutionListener)  // Step 리스너 등록
                 .build();
     }
 }

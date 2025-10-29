@@ -1,6 +1,7 @@
 package com.example.demo.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
  * 회원의 마일리지 잔액 정보를 관리
  */
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Mileage {

@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@dev-db-server:1521:DEVDB
+    username: dev_user
+    password: dev_password
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 10
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  batch:
+    jdbc:
+      initialize-schema: never
+
+logging:
+  level:
+    com.example.demo: DEBUG
+    org.springframework.batch: INFO
+    org.mybatis: DEBUG
+  file:
+    name: logs/batch-dev.log
+    max-size: 50MB
+    max-history: 30
