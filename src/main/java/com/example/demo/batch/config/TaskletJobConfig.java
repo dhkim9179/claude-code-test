@@ -1,5 +1,7 @@
 package com.example.demo.batch.config;
 
+import com.example.demo.batch.listener.BatchJobExecutionListener;
+import com.example.demo.batch.listener.BatchStepExecutionListener;
 import com.example.demo.batch.tasklet.SimpleTasklet;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,8 @@ public class TaskletJobConfig {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
     private final SimpleTasklet simpleTasklet;
+    private final BatchJobExecutionListener batchJobExecutionListener;
+    private final BatchStepExecutionListener batchStepExecutionListener;
 
     /**
      * Tasklet 기반 Job 정의
@@ -37,6 +41,7 @@ public class TaskletJobConfig {
     public Job taskletJob() {
         log.info("taskletJob 빈 생성");
         return new JobBuilder("taskletJob", jobRepository)
+                .listener(batchJobExecutionListener)  // Job 리스너 등록
                 .start(taskletStep())  // Step 시작
                 .build();
     }
@@ -53,6 +58,7 @@ public class TaskletJobConfig {
         log.info("taskletStep 빈 생성");
         return new StepBuilder("taskletStep", jobRepository)
                 .tasklet(simpleTasklet, transactionManager)  // Tasklet 설정
+                .listener(batchStepExecutionListener)  // Step 리스너 등록
                 .build();
     }
 }
