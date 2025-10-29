@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.example.demo.controller.v1;
 
 import com.example.demo.dto.JobExecutionRequest;
 import com.example.demo.dto.JobExecutionResponse;
@@ -13,23 +13,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 배치 Job 실행 REST API Controller (하위 호환성 유지)
+ * 배치 Job 실행 REST API Controller v1
  *
- * @deprecated /api/v1/batch 또는 /api/v2/batch를 사용하세요. 이 엔드포인트는 향후 제거될 예정입니다.
+ * @deprecated v2를 사용하는 것을 권장합니다. v1은 향후 제거될 예정입니다.
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/batch")
+@RequestMapping("/api/v1/batch")
 @RequiredArgsConstructor
 @Deprecated
-public class BatchJobController {
+public class BatchJobControllerV1 {
 
     private final BatchJobService batchJobService;
 
     /**
      * 배치 Job을 실행하는 API
      *
-     * POST /api/batch/execute
+     * POST /api/v1/batch/execute
      *
      * Request Body:
      * {

@@ -86,10 +86,11 @@
         WHERE summary_date = #{summaryDate}
     </delete>
 
-    <!-- 마일리지 히스토리로부터 특정 일자의 집계 데이터 생성 -->
+    <!-- 마일리지 히스토리로부터 특정 일자의 집계 데이터 생성
+         최적화: CAST 제거하고 범위 검색으로 변경하여 create_date 인덱스 활용 -->
     <select id="aggregateByDate" resultMap="MileageDailySummaryResultMap">
         SELECT
-            CAST(create_date AS DATE) AS summary_date,
+            #{summaryDate} AS summary_date,
             COALESCE(SUM(CASE WHEN type = 'EARN' THEN amount ELSE 0 END), 0) AS total_earn_amount,
             COALESCE(COUNT(CASE WHEN type = 'EARN' THEN 1 END), 0) AS total_earn_count,
             COALESCE(SUM(CASE WHEN type = 'USE' THEN ABS(amount) ELSE 0 END), 0) AS total_use_amount,
@@ -98,8 +99,8 @@
             CURRENT_TIMESTAMP AS create_date,
             CURRENT_TIMESTAMP AS update_date
         FROM MILEAGE_HISTORY
-        WHERE CAST(create_date AS DATE) = #{summaryDate}
-        GROUP BY CAST(create_date AS DATE)
+        WHERE create_date >= CAST(#{summaryDate} AS TIMESTAMP)
+          AND create_date < DATEADD('DAY', 1, CAST(#{summaryDate} AS TIMESTAMP))
     </select>
 
     <!-- UPSERT (H2 MERGE 구문 사용) -->

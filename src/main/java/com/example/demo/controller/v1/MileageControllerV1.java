@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.example.demo.controller.v1;
 
 import com.example.demo.domain.Mileage;
 import com.example.demo.domain.MileageDailySummary;
@@ -14,23 +14,23 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * 마일리지 REST API 컨트롤러 (하위 호환성 유지)
+ * 마일리지 REST API 컨트롤러 v1
  * 마일리지 조회 및 일별 집계 조회를 위한 API 제공
  *
- * @deprecated /api/v1/mileage 또는 /api/v2/mileage를 사용하세요. 이 엔드포인트는 향후 제거될 예정입니다.
+ * @deprecated v2를 사용하는 것을 권장합니다. v1은 향후 제거될 예정입니다.
  */
 @RestController
-@RequestMapping("/api/mileage")
+@RequestMapping("/api/v1/mileage")
 @RequiredArgsConstructor
 @Deprecated
-public class MileageController {
+public class MileageControllerV1 {
 
     private final MileageService mileageService;
     private final MileageDailySummaryService summaryService;
 
     /**
      * 회원 마일리지 조회
-     * GET /api/mileage/{memberId}
+     * GET /api/v1/mileage/{memberId}
      */
     @GetMapping("/{memberId}")
     public ResponseEntity<Mileage> getMileage(@PathVariable Long memberId) {
@@ -43,7 +43,7 @@ public class MileageController {
 
     /**
      * 회원 마일리지 이력 조회
-     * GET /api/mileage/{memberId}/history
+     * GET /api/v1/mileage/{memberId}/history
      */
     @GetMapping("/{memberId}/history")
     public ResponseEntity<List<MileageHistory>> getMileageHistory(@PathVariable Long memberId) {
@@ -53,7 +53,7 @@ public class MileageController {
 
     /**
      * 특정 일자의 마일리지 집계 조회
-     * GET /api/mileage/summary?date=2024-01-01
+     * GET /api/v1/mileage/summary?date=2024-01-01
      */
     @GetMapping("/summary")
     public ResponseEntity<MileageDailySummary> getDailySummary(
@@ -67,7 +67,7 @@ public class MileageController {
 
     /**
      * 기간별 마일리지 집계 조회
-     * GET /api/mileage/summary/range?startDate=2024-01-01&endDate=2024-01-31
+     * GET /api/v1/mileage/summary/range?startDate=2024-01-01&endDate=2024-01-31
      */
     @GetMapping("/summary/range")
     public ResponseEntity<List<MileageDailySummary>> getDailySummariesByRange(
@@ -79,7 +79,7 @@ public class MileageController {
 
     /**
      * 최근 N일간의 마일리지 집계 조회
-     * GET /api/mileage/summary/recent?days=7
+     * GET /api/v1/mileage/summary/recent?days=7
      */
     @GetMapping("/summary/recent")
     public ResponseEntity<List<MileageDailySummary>> getRecentSummaries(
@@ -90,7 +90,7 @@ public class MileageController {
 
     /**
      * 기간별 전체 통계 조회
-     * GET /api/mileage/statistics?startDate=2024-01-01&endDate=2024-01-31
+     * GET /api/v1/mileage/statistics?startDate=2024-01-01&endDate=2024-01-31
      */
     @GetMapping("/statistics")
     public ResponseEntity<MileageDailySummary> getTotalStatistics(
@@ -105,7 +105,7 @@ public class MileageController {
 
     /**
      * 특정 일자의 집계 재생성
-     * POST /api/mileage/summary/aggregate?date=2024-01-01
+     * POST /api/v1/mileage/summary/aggregate?date=2024-01-01
      */
     @PostMapping("/summary/aggregate")
     public ResponseEntity<MileageDailySummary> aggregateDate(
