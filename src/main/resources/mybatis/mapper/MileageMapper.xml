@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper.MileageMapper">
+
+    <!-- Result Map 정의 -->
+    <resultMap id="MileageResultMap" type="com.example.demo.domain.Mileage">
+        <id property="memberId" column="member_id"/>
+        <result property="balance" column="balance"/>
+        <result property="createDate" column="create_date"/>
+        <result property="updateDate" column="update_date"/>
+    </resultMap>
+
+    <!-- 회원 ID로 마일리지 조회 -->
+    <select id="findByMemberId" resultMap="MileageResultMap">
+        SELECT member_id,
+               balance,
+               create_date,
+               update_date
+        FROM MILEAGE
+        WHERE member_id = #{memberId}
+    </select>
+
+    <!-- 마일리지 신규 등록 -->
+    <insert id="insert" parameterType="com.example.demo.domain.Mileage">
+        INSERT INTO MILEAGE (
+            member_id,
+            balance,
+            create_date,
+            update_date
+        ) VALUES (
+            #{memberId},
+            #{balance},
+            #{createDate},
+            #{updateDate}
+        )
+    </insert>
+
+    <!-- 마일리지 잔액 업데이트 -->
+    <update id="updateBalance">
+        UPDATE MILEAGE
+        SET balance = #{balance},
+            update_date = CURRENT_TIMESTAMP
+        WHERE member_id = #{memberId}
+    </update>
+
+    <!-- 마일리지 정보 삭제 -->
+    <delete id="deleteByMemberId">
+        DELETE FROM MILEAGE
+        WHERE member_id = #{memberId}
+    </delete>
+
+    <!-- 마일리지 잔액 증가 (적립) -->
+    <update id="increaseBalance">
+        UPDATE MILEAGE
+        SET balance = balance + #{amount},
+            update_date = CURRENT_TIMESTAMP
+        WHERE member_id = #{memberId}
+    </update>
+
+    <!-- 마일리지 잔액 감소 (사용) -->
+    <update id="decreaseBalance">
+        UPDATE MILEAGE
+        SET balance = balance - #{amount},
+            update_date = CURRENT_TIMESTAMP
+        WHERE member_id = #{memberId}
+          AND balance >= #{amount}
+    </update>
+
+</mapper>
