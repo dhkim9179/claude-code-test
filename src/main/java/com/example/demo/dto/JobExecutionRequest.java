@@ -1,6 +1,9 @@
 package com.example.demo.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
@@ -8,6 +11,9 @@ import java.util.Map;
  * 배치 Job 실행 요청 DTO
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class JobExecutionRequest {
 
     /**

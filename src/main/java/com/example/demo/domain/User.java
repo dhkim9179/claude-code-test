@@ -1,6 +1,7 @@
 package com.example.demo.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
  * Chunk 기반 배치 예제에서 사용되는 샘플 데이터 모델
  */
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
